@@ -1,7 +1,6 @@
 <?php
-$db = new SQLite3('musics.db');
+$db = new SQLite3('../public/db/musics.db');
 
-// Crear la tabla (si no existe)
 $db->exec("CREATE TABLE IF NOT EXISTS musics (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT,
@@ -12,21 +11,13 @@ $db->exec("CREATE TABLE IF NOT EXISTS musics (
     hit_song TEXT
 )");
 
-// Insertar datos (esto solo debería hacerse una vez)
 $db->exec("INSERT INTO musics (name, birth_date, death_date, genre, image_url, hit_song) VALUES
 ('Bruno Mars', '1985-10-08', NULL, 'Pop / Funk / R&B', 'https://i.scdn.co/image/ab6761610000e5ebc36dd9eb55fb0db4911f25dd', 'Uptown Funk'),
-('Freddie Mercury', '1946-09-05', '1991-11-24', 'Rock', 'https://upload.wikimedia.org/wikipedia/commons/0/0e/Freddie_Mercury_1984_1.jpg', 'Bohemian Rhapsody'),
-('Adele', '1988-05-05', NULL, 'Soul / Pop', 'https://upload.wikimedia.org/wikipedia/commons/3/3c/Adele_2016.jpg', 'Someone Like You'),
-('Eminem', '1972-10-17', NULL, 'Rap / Hip-Hop', 'https://upload.wikimedia.org/wikipedia/commons/7/75/Eminem_2014.jpg', 'Lose Yourself'),
-('El Fary', '1937-08-20', '2007-06-19', 'Copla / Flamenco', 'https://upload.wikimedia.org/wikipedia/commons/d/d9/El_Fary.jpg', 'Apatrullando la ciudad')
+('Freddie Mercury', '1946-09-05', '1991-11-24', 'Rock', 'https://hips.hearstapps.com/hmg-prod/images/freddie-mercury-wembley-live-aid-13-julio-1985-1502982486.jpg?crop=1xw:1xh;center,top&resize=980:*', 'Bohemian Rhapsody'),
+('Adele', '1988-05-05', NULL, 'Soul / Pop', 'https://ca-times.brightspotcdn.com/dims4/default/4aecb2d/2147483647/strip/true/crop/2786x2080+0+0/resize/1200x896!/quality/75/?url=https%3A%2F%2Fcalifornia-times-brightspot.s3.amazonaws.com%2F43%2F5d%2F472688631f96fded895dcc2b27c1%2Fde32dcf8da0845bc916ca51223557a2f', 'Someone Like You'),
+('Eminem', '1972-10-17', NULL, 'Rap / Hip-Hop', 'https://www.infobae.com/resizer/v2/https%3A%2F%2Fs3.amazonaws.com%2Farc-wordpress-client-uploads%2Finfobae-wp%2Fwp-content%2Fuploads%2F2017%2F05%2F03072224%2FEminem-1920.jpg?auth=56680577a984dfcf9a35e803376865accf5db91148c78b1e447de686c718c764&smart=true&width=1200&height=675&quality=85', 'Lose Yourself'),
+('El Fary', '1937-08-20', '2007-06-19', 'Copla / Flamenco', 'https://static.lasprovincias.es/www/multimedia/202108/03/media/ElFary_ArchivoRTVE%20(1).jpg', 'Apatrullando la ciudad')
 ");
-
-// Actualizar URLs de las imágenes a rutas locales
-$db->exec("UPDATE musics SET image_url = 'public/fotos/brunoMars.jpeg' WHERE name = 'Bruno Mars'");
-$db->exec("UPDATE musics SET image_url = 'public/fotos/freddyM.png' WHERE name = 'Freddie Mercury'");
-$db->exec("UPDATE musics SET image_url = 'public/fotos/adele.jpeg' WHERE name = 'Adele'");
-$db->exec("UPDATE musics SET image_url = 'public/fotos/Eminem.png' WHERE name = 'Eminem'");
-$db->exec("UPDATE musics SET image_url = 'public/fotos/elfary.png' WHERE name = 'El Fary'");
 
 $db->close();
 ?>

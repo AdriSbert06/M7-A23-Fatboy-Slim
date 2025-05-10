@@ -10,13 +10,9 @@ $app->addRoutingMiddleware();
 $app->addErrorMiddleware(true, true, true);
 
 $app->get('/', function (Request $request, Response $response) {
-    // Conectar a la base de datos
     $db = new SQLite3('../public/db/musics.db');
-
-    // Consultar los datos de la base de datos
     $result = $db->query("SELECT * FROM musics");
-    
-    // Crear el contenido HTML
+
     $html = "
     <!DOCTYPE html>
     <html lang='ca'>
@@ -24,37 +20,40 @@ $app->get('/', function (Request $request, Response $response) {
         <meta charset='UTF-8'>
         <meta name='viewport' content='width=device-width, initial-scale=1.0'>
         <title>Biografies de Músics</title>
-        <style>
-            body { font-family: sans-serif; padding: 2rem; background: #eee; }
-            .card { background: white; padding: 1rem; margin-bottom: 1rem; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-            img { max-width: 200px; height: auto; }
-        </style>
+        <script src='https://cdn.tailwindcss.com'></script>
     </head>
-    <body>
-        <h1>Biografies de Músics</h1>";
-
-    // Procesar cada músico en los resultados
+    <body class='bg-blue-50 font-sans p-8'>
+        <h1 class='text-4xl font-bold text-center text-blue-800 mb-10'>Biografies de Músics</h1>
+        <div class='grid grid-cols-1 gap-8'>";
+    
     while ($m = $result->fetchArray(SQLITE3_ASSOC)) {
         $birth = new DateTime($m['birth_date']);
         $death = $m['death_date'] ? new DateTime($m['death_date']) : new DateTime();
         $age = $birth->diff($death)->y;
 
+        $name = htmlspecialchars($m['name'], ENT_QUOTES);
+        $birth_date = htmlspecialchars($m['birth_date'], ENT_QUOTES);
+        $death_date = htmlspecialchars($m['death_date'], ENT_QUOTES);
+        $genre = htmlspecialchars($m['genre'], ENT_QUOTES);
+        $image_url = htmlspecialchars($m['image_url'], ENT_QUOTES);
+        $hit_song = htmlspecialchars($m['hit_song'], ENT_QUOTES);
+
         $html .= "
-        <div class='card'>
-            <h2>{$m['name']}</h2>
-            <img src='{$m['image_url']}' alt='{$m['name']}'><br>
-            <strong>Naixement:</strong> {$m['birth_date']}<br>";
+        <div class='bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center transition-transform transform hover:scale-105'>
+            <h2 class='text-2xl font-semibold text-blue-900 mb-4'>{$name}</h2>
+            <img class='mb-4 rounded shadow-md' src='{$image_url}' alt='{$name}' onerror=\"this.src='default.jpg'\" style='max-height: 200px;'>
+            <p class='text-gray-700'><strong>Naixement:</strong> {$birth_date}</p>";
         if ($m['death_date']) {
-            $html .= "<strong>Mort:</strong> {$m['death_date']}<br>";
+            $html .= "<p class='text-gray-700'><strong>Mort:</strong> {$death_date}</p>";
         }
         $html .= "
-            <strong>Edat:</strong> $age anys<br>
-            <strong>Gènere musical:</strong> {$m['genre']}<br>
-            <strong>Cançó més famosa:</strong> {$m['hit_song']}
+            <p class='text-gray-700'><strong>Edat:</strong> {$age} anys</p>
+            <p class='text-gray-700'><strong>Gènere musical:</strong> {$genre}</p>
+            <p class='text-gray-700'><strong>Cançó més famosa:</strong> {$hit_song}</p>
         </div>";
     }
 
-    $html .= "</body></html>";
+    $html .= "</div></body></html>";
 
     $response->getBody()->write($html);
     return $response->withHeader('Content-Type', 'text/html');
